@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+</head>
+<body style="margin:0">
+<title>Portland Beer Weekend</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: field guide. Masthead with game-day call, sticky jump bar, then one band per area: schematic map + numbered cards, ranked board at the end. */
+:root {
+  --bg:#F2F4F1; --surface:#FFFFFF; --ink:#18211D; --muted:#5B6660; --line:#D7DDD8;
+  --accent:#B86A0B; --accent-ink:#FFFFFF; --river:#9CC3D8; --grid:#E3E8E4;
+  --c-brewery:#B86A0B; --c-bar:#1F7A6D; --c-sports:#3D5BA9; --c-pizza:#B83A2E; --c-burger:#6B4A2B;
+  --yes:#1E7A43; --yes-bg:#E1F2E7; --no:#7A6A5B; --no-bg:#EEEAE5; --unk:#6A7570; --unk-bg:#E8ECE9;
+  --display:"Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --body:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg:#121815; --surface:#1A221E; --ink:#E7ECE8; --muted:#9AA6A0; --line:#2C3632;
+  --accent:#E79A35; --accent-ink:#1A1206; --river:#2C5A72; --grid:#1F2824;
+  --c-brewery:#D8892A; --c-bar:#3BA796; --c-sports:#6E8BD6; --c-pizza:#D9604F; --c-burger:#A57A4F;
+  --yes:#7FD39E; --yes-bg:#1B3325; --no:#C9B7A4; --no-bg:#2E2923; --unk:#A7B2AC; --unk-bg:#252E2A; color-scheme:dark; } }
+:root[data-theme="dark"] {
+  --bg:#121815; --surface:#1A221E; --ink:#E7ECE8; --muted:#9AA6A0; --line:#2C3632;
+  --accent:#E79A35; --accent-ink:#1A1206; --river:#2C5A72; --grid:#1F2824;
+  --c-brewery:#D8892A; --c-bar:#3BA796; --c-sports:#6E8BD6; --c-pizza:#D9604F; --c-burger:#A57A4F;
+  --yes:#7FD39E; --yes-bg:#1B3325; --no:#C9B7A4; --no-bg:#2E2923; --unk:#A7B2AC; --unk-bg:#252E2A; color-scheme:dark; }
+* { box-sizing:border-box }
+body { background:var(--bg); color:var(--ink); font-family:var(--body); font-size:15px; line-height:1.5;
+  padding-left:max(16px, env(safe-area-inset-left,0px)); padding-right:max(16px, env(safe-area-inset-right,0px)); padding-block:0 48px }
+.wrap { max-width:1080px; margin:0 auto }
+a { color:inherit }
+a:focus-visible { outline:2px solid var(--accent); outline-offset:2px }
+h1,h2 { font-family:var(--display); text-wrap:balance; margin:0; line-height:1 }
+header.mast { padding-block:32px 20px; display:grid; gap:18px }
+.eyebrow { font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted) }
+h1 { font-size:clamp(44px, 9vw, 84px); font-weight:800; letter-spacing:.01em; text-transform:uppercase }
+h1 span { color:var(--accent) }
+.lede { max-width:62ch; color:var(--muted); margin:0 }
+.mapbtn { justify-self:start; display:inline-flex; align-items:center; gap:8px; background:var(--accent); color:var(--accent-ink); text-decoration:none; font-weight:600; padding:10px 16px; border-radius:8px }
+.mapbtn:hover { filter:brightness(1.08) }
+.mapbtn small { font-weight:400; opacity:.85 }
+@media print { .mapbtn { background:none; color:var(--ink); padding:0; border:0 } }
+.gameday { background:var(--ink); color:var(--bg); border-radius:10px; padding:18px 20px; display:grid; gap:10px }
+.gameday h3 { font-family:var(--display); font-size:28px; margin:0; text-transform:uppercase; letter-spacing:.02em }
+.gameday h3 b { color:var(--accent) }
+.gameday ol { margin:0; padding-left:20px; display:grid; gap:6px }
+.gameday li { max-width:75ch }
+nav.jump { position:sticky; top:env(safe-area-inset-top,0px); z-index:5; background:var(--bg); border-bottom:1px solid var(--line);
+  display:flex; gap:6px; overflow-x:auto; padding-block:10px; scrollbar-width:none }
+body::before { content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top,0px); z-index:10; background:var(--bg) }
+nav.jump a { text-decoration:none; font-weight:500; font-size:14px; padding:6px 12px; border-radius:999px; border:1px solid var(--line); white-space:nowrap; background:var(--surface) }
+nav.jump a:hover { border-color:var(--accent) }
+.legend { display:flex; flex-wrap:wrap; gap:6px 16px; font-size:13px; color:var(--muted); padding-block:14px 0 }
+.legend i { display:inline-block; width:11px; height:11px; border-radius:50%; margin-right:6px; vertical-align:-1px }
+.sect { padding-block:36px 8px; display:grid; gap:16px; scroll-margin-top:64px }
+.sect-head { display:grid; gap:4px }
+.sect-head h2 { font-size:clamp(32px,6vw,46px); font-weight:800; text-transform:uppercase }
+.sect-head p { margin:0; color:var(--muted) }
+.mapwrap { background:var(--surface); border:1px solid var(--line); border-radius:10px; overflow:hidden }
+.map { display:block; width:100%; height:auto }
+.m-bg { fill:var(--surface) } .m-grid { stroke:var(--grid); stroke-width:1 }
+.m-river { fill:none; stroke:var(--river); stroke-width:14; stroke-linecap:round; stroke-linejoin:round; opacity:.7 }
+.m-road { stroke:var(--line); stroke-width:3; stroke-dasharray:2 6 }
+.m-lbl { fill:var(--muted); font:500 12px var(--body) } .m-lbl.strong { fill:var(--ink); font-weight:600 }
+.m-home rect { fill:var(--ink) }
+.pin circle { stroke:var(--surface); stroke-width:2 }
+.pin text { fill:#fff; font:600 11px var(--mono) }
+.pin-brewery circle, .num.pin-brewery { fill:var(--c-brewery); background:var(--c-brewery) }
+.pin-bar circle, .num.pin-bar { fill:var(--c-bar); background:var(--c-bar) }
+.pin-sports circle, .num.pin-sports { fill:var(--c-sports); background:var(--c-sports) }
+.pin-pizza circle, .num.pin-pizza { fill:var(--c-pizza); background:var(--c-pizza) }
+.pin-burger circle, .num.pin-burger { fill:var(--c-burger); background:var(--c-burger) }
+.legend .lb { background:var(--c-brewery) } .legend .lr { background:var(--c-bar) } .legend .ls { background:var(--c-sports) }
+.legend .lp { background:var(--c-pizza) } .legend .lg { background:var(--c-burger) } .legend .lh { background:var(--ink); border-radius:2px; transform:rotate(45deg) }
+.cards { display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap:12px }
+.card { background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:14px 16px; display:grid; gap:10px; align-content:start; min-width:0; break-inside:avoid }
+.card-top { display:grid; grid-template-columns:auto 1fr auto; gap:10px; align-items:start }
+.num { width:26px; height:26px; border-radius:50%; color:#fff; font:600 12px var(--mono); display:grid; place-items:center }
+.card h4 { margin:0; font-size:16px; font-weight:600; line-height:1.25 }
+.card h4 a { text-decoration:none } .card h4 a:hover { text-decoration:underline }
+.meta { font-size:12.5px; color:var(--muted) }
+.flag { font-family:var(--mono); font-size:11px; letter-spacing:.04em; text-transform:uppercase; background:var(--accent); color:var(--accent-ink); padding:3px 7px; border-radius:4px; white-space:nowrap }
+.chips { display:flex; flex-wrap:wrap; gap:6px }
+.chip { font-size:12px; font-weight:500; padding:3px 8px; border-radius:999px; background:var(--unk-bg); color:var(--unk); white-space:nowrap }
+.tv-yes { background:var(--yes-bg); color:var(--yes) } .tv-no { background:var(--no-bg); color:var(--no) }
+.ut { display:inline-flex; align-items:center; border:1px solid var(--accent); border-radius:999px; overflow:hidden; text-decoration:none; font-size:12px }
+.ut-k { padding:2px 7px; color:var(--accent) } .ut-v { padding:2px 8px; background:var(--accent); color:var(--accent-ink); font-family:var(--mono); font-weight:600; font-variant-numeric:tabular-nums }
+.note { margin:0; font-size:14px }
+.foot { display:flex; flex-wrap:wrap; justify-content:space-between; gap:4px 12px; font-size:12.5px; color:var(--muted); border-top:1px solid var(--line); padding-top:8px }
+.foot a { color:var(--muted) }
+.tablewrap { overflow-x:auto; background:var(--surface); border:1px solid var(--line); border-radius:10px }
+table { border-collapse:collapse; width:100%; min-width:620px; font-size:14px }
+th, td { text-align:left; padding:9px 12px; border-bottom:1px solid var(--line); vertical-align:middle }
+th { font-family:var(--mono); font-size:11.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:500 }
+td.rk { font-family:var(--mono); color:var(--muted); width:2.5em; font-variant-numeric:tabular-nums }
+td a { font-weight:600; text-decoration:none } td a:hover { text-decoration:underline }
+td.score { font-family:var(--mono); font-weight:600; font-variant-numeric:tabular-nums; white-space:nowrap; width:150px }
+.bar { display:inline-block; height:8px; width:70px; margin-right:10px; border-radius:2px; background:linear-gradient(90deg, var(--accent) var(--w), var(--grid) var(--w)); vertical-align:0 }
+td.where { color:var(--muted); font-size:13px }
+tr.t1 td:first-child { box-shadow:inset 3px 0 var(--accent) }
+.tierkey { font-size:13px; color:var(--muted); margin:0 }
+.closed { list-style:none; margin:0; padding:0; display:grid; gap:8px; grid-template-columns:repeat(auto-fill, minmax(min(100%, 300px), 1fr)) }
+.closed li { background:var(--surface); border:1px dashed var(--line); border-radius:8px; padding:10px 12px; font-size:14px; display:grid }
+.closed span { color:var(--muted); font-size:13px }
+footer { padding-block:28px 0; color:var(--muted); font-size:13px; max-width:75ch }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior:auto !important } }
+@media print {
+  @page { size:letter; margin:0.5in }
+  :root { color-scheme:light }
+  body { font-size:10.5pt; padding:0; background:#fff }
+  nav.jump, body::before { display:none }
+  .gameday { background:#18211D; color:#F2F4F1; -webkit-print-color-adjust:exact; print-color-adjust:exact }
+  .sect { break-before:page; padding-block:0 8px; gap:12pt }
+  #ranked { break-before:auto; padding-top:14pt }
+  tr { break-inside:avoid }
+  .cards { grid-template-columns:1fr 1fr; gap:8pt }
+  .card { padding:8pt 10pt; gap:6pt }
+  .note { font-size:10pt }
+  .mapwrap svg { max-height:3.6in; width:auto; margin:0 auto }
+  * { -webkit-print-color-adjust:exact; print-color-adjust:exact }
+  table { min-width:0; font-size:10pt }
+  a { text-decoration:none }
+}
+</style>
+<div class="wrap">
+<header class="mast">
+  <div class="eyebrow">Nov 13–15, 2026 · Base: 925 NE 23rd Ave</div>
+  <h1>Portland <span>Beer</span> Weekend</h1>
+  <p class="lede">Breweries, beer bars, pizza and burgers in four areas, each with its Untappd rating, TV status and hours. Tap a name for the brewery's site, the rating for its Untappd page, the address for directions. Hours change; check before you go.</p>
+  <a class="mapbtn" href="https://www.google.com/maps/d/viewer?mid=1HFdr8MKDcj7Y_1BzO9MobulaVO9WHtc" target="_blank" rel="noopener">Open the live Google map ↗ <small>all 41 spots, 4 layers</small></a>
+  <div class="gameday">
+    <h3>Saturday: Michigan at Oregon · <b>12:30 PT</b></h3>
+    <ol>
+      <li><strong>Watch at Steeplejack</strong> (0.4 mi walk). Game room with two 65" TVs, opens 9am. Call ahead; the room gets booked for events.</li>
+      <li><strong>Backup: Broadway Grill</strong> (0.5 mi). Lots of TVs, opens 9am. <strong>Spirit of 77</strong> if you want a full Ducks crowd.</li>
+      <li><strong>After the game:</strong> walk to Duality (opens 2pm) and Rosenstadt, then Uber to Grand Fir, Living Häus and Wayfinder, or to Everywhere on SE Caruthers.</li>
+    </ol>
+  </div>
+</header>
+<nav class="jump" aria-label="Sections">
+  <a href="#ranked">Ranked list</a><a href="#home">Home base</a><a href="#east">Eastside</a><a href="#nw">Northwest</a><a href="#far">Farther out</a><a href="#closed">Closed</a>
+</nav>
+<div class="legend"><span><i class="lh"></i>Airbnb</span><span><i class="lb"></i>Brewery</span><span><i class="lr"></i>Beer bar</span><span><i class="ls"></i>Sports bar</span><span><i class="lp"></i>Pizza</span><span><i class="lg"></i>Burger</span></div>
+
+<section id="ranked" class="sect">
+  <div class="sect-head"><h2>Every brewery, ranked</h2><p>Untappd brewery rating, highest to lowest. Name links to Untappd.</p></div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>#</th><th>Brewery</th><th>Untappd</th><th>Where</th><th>TV</th></tr></thead>
+    <tbody><tr class="t1"><td class="rk">1</td><td><a href="https://untappd.com/BrujosBrewing" target="_blank" rel="noopener">Brujos Brewing</a></td><td class="score"><span class="bar" style="--w:97%"></span>4.38</td><td class="where">Northwest · 2.8 mi</td><td><span class="chip tv-no">No TV</span></td></tr><tr class="t1"><td class="rk">2</td><td><a href="https://untappd.com/search?q=Everywhere+Beer&amp;type=brewery" target="_blank" rel="noopener">Everywhere Beer Co.</a> <span class="chip">Out-of-town</span></td><td class="score"><span class="bar" style="--w:70%"></span>4.16</td><td class="where">Central Eastside · 1.7 mi</td><td><span class="chip tv-unk">TV ?</span></td></tr><tr class="t1"><td class="rk">3</td><td><a href="https://untappd.com/GreatNotionBrewing" target="_blank" rel="noopener">Great Notion</a></td><td class="score"><span class="bar" style="--w:66%"></span>4.13</td><td class="where">Northwest · 3.3 mi / Farther out 2.0 mi</td><td><span class="chip tv-unk">TV ?</span></td></tr><tr class="t1"><td class="rk">4</td><td><a href="https://untappd.com/RuseBrewing" target="_blank" rel="noopener">Ruse Brewing</a></td><td class="score"><span class="bar" style="--w:55%"></span>4.04</td><td class="where">Farther out · 2.9 mi</td><td><span class="chip tv-unk">TV ?</span></td></tr><tr class="t2"><td class="rk">5</td><td><a href="https://untappd.com/w/grand-fir-brewing/532569" target="_blank" rel="noopener">Grand Fir Brewing</a></td><td class="score"><span class="bar" style="--w:47%"></span>3.98</td><td class="where">Central Eastside · 0.8 mi</td><td><span class="chip tv-unk">TV ?</span></td></tr><tr class="t2"><td class="rk">6</td><td><a href="https://untappd.com/search?q=Duality+Brewing+Portland&amp;type=brewery" target="_blank" rel="noopener">Duality Brewing</a></td><td class="score"><span class="bar" style="--w:41%"></span>3.93</td><td class="where">Home base · 0.2 mi</td><td><span class="chip tv-no">No TV</span></td></tr><tr class="t2"><td class="rk">6</td><td><a href="https://untappd.com/search?q=Hetty+Alice&amp;type=brewery" target="_blank" rel="noopener">Hetty Alice</a></td><td class="score"><span class="bar" style="--w:41%"></span>3.93</td><td class="where">At Living Häus · 1.2 mi</td><td><span class="chip tv-no">No TV</span></td></tr><tr class="t2"><td class="rk">8</td><td><a href="https://untappd.com/LivingHausBeer" target="_blank" rel="noopener">Living Häus</a></td><td class="score"><span class="bar" style="--w:40%"></span>3.92</td><td class="where">Central Eastside · 1.2 mi</td><td><span class="chip tv-no">No TV</span></td></tr><tr class="t2"><td class="rk">8</td><td><a href="https://untappd.com/Wayfinder_Crispies4lyfe" target="_blank" rel="noopener">Wayfinder Beer</a></td><td class="score"><span class="bar" style="--w:40%"></span>3.92</td><td class="where">Central Eastside · 1.2 mi</td><td><span class="chip tv-unk">TV ?</span></td></tr><tr class="t2"><td class="rk">10</td><td><a href="https://untappd.com/pfriembeer" target="_blank" rel="noopener">pFriem Family Brewers</a> <span class="chip">Out-of-town</span></td><td class="score"><span class="bar" style="--w:39%"></span>3.91</td><td class="where">Milwaukie, about 20 min south</td><td><span class="chip tv-unk">TV ?</span></td></tr><tr class="t3"><td class="rk">11</td><td><a href="https://untappd.com/search?q=ForeLand+Beer&amp;type=brewery" target="_blank" rel="noopener">ForeLand</a> <span class="chip">Out-of-town</span></td><td class="score"><span class="bar" style="--w:36%"></span>3.89</td><td class="where">Central Eastside · 0.9 mi</td><td><span class="chip tv-yes">TV</span></td></tr><tr class="t3"><td class="rk">12</td><td><a href="https://untappd.com/BreaksideBrewery" target="_blank" rel="noopener">Breakside</a></td><td class="score"><span class="bar" style="--w:35%"></span>3.88</td><td class="where">Northwest · 2.6 mi</td><td><span class="chip tv-unk">TV ?</span></td></tr><tr class="t3"><td class="rk">13</td><td><a href="https://untappd.com/ThresholdBrewing" target="_blank" rel="noopener">Threshold Brewing</a></td><td class="score"><span class="bar" style="--w:32%"></span>3.86</td><td class="where">Farther out · 2.9 mi</td><td><span class="chip tv-unk">TV ?</span></td></tr><tr class="t3"><td class="rk">14</td><td><a href="https://untappd.com/AwayDaysBrewing" target="_blank" rel="noopener">Away Days Brewing</a></td><td class="score"><span class="bar" style="--w:30%"></span>3.84</td><td class="where">Farther out · 2.6 mi</td><td><span class="chip tv-unk">TV ?</span></td></tr><tr class="t3"><td class="rk">15</td><td><a href="https://untappd.com/BaerlicBrewingCo" target="_blank" rel="noopener">Baerlic Brewing</a></td><td class="score"><span class="bar" style="--w:29%"></span>3.83</td><td class="where">Central Eastside · 1.7 mi</td><td><span class="chip tv-unk">TV ?</span></td></tr><tr class="t3"><td class="rk">15</td><td><a href="https://untappd.com/Little_Beast_Brewing" target="_blank" rel="noopener">Little Beast Beer Garden</a></td><td class="score"><span class="bar" style="--w:29%"></span>3.83</td><td class="where">Farther out · 1.8 mi</td><td><span class="chip tv-unk">TV ?</span></td></tr><tr class="t3"><td class="rk">15</td><td><a href="https://untappd.com/VonEbertBrewing" target="_blank" rel="noopener">Von Ebert</a></td><td class="score"><span class="bar" style="--w:29%"></span>3.83</td><td class="where">Farther out · 2.0 mi</td><td><span class="chip tv-unk">TV ?</span></td></tr><tr class="t3"><td class="rk">18</td><td><a href="https://untappd.com/DeschutesBrewery" target="_blank" rel="noopener">Deschutes Public House</a> <span class="chip">Out-of-town</span></td><td class="score"><span class="bar" style="--w:25%"></span>3.80</td><td class="where">Northwest · 1.9 mi</td><td><span class="chip tv-unk">TV ?</span></td></tr><tr class="t3"><td class="rk">18</td><td><a href="https://untappd.com/GiganticBrewingCompany" target="_blank" rel="noopener">Gigantic Brewing</a></td><td class="score"><span class="bar" style="--w:25%"></span>3.80</td><td class="where">Farther out · 3.2 mi</td><td><span class="chip tv-unk">TV ?</span></td></tr><tr class="t4"><td class="rk">20</td><td><a href="https://untappd.com/RosenstadtBrewery" target="_blank" rel="noopener">Rosenstadt</a></td><td class="score"><span class="bar" style="--w:24%"></span>3.79</td><td class="where">Home base · 0.1 mi</td><td><span class="chip tv-no">No TV</span></td></tr><tr class="t4"><td class="rk">21</td><td><a href="https://untappd.com/LevelBeer" target="_blank" rel="noopener">Level Beer</a></td><td class="score"><span class="bar" style="--w:22%"></span>3.78</td><td class="where">Home base · 0.5 mi</td><td><span class="chip tv-unk">TV ?</span></td></tr><tr class="t4"><td class="rk">22</td><td><a href="https://untappd.com/SteeplejackBrewingCompany" target="_blank" rel="noopener">Steeplejack Brewing</a></td><td class="score"><span class="bar" style="--w:21%"></span>3.77</td><td class="where">Home base · 0.4 mi</td><td><span class="chip tv-yes">TV</span></td></tr><tr class="t4"><td class="rk">23</td><td><a href="https://untappd.com/MigrationBrew" target="_blank" rel="noopener">Migration Brewing</a></td><td class="score"><span class="bar" style="--w:19%"></span>3.75</td><td class="where">Home base · 0.3 mi</td><td><span class="chip tv-unk">TV ?</span></td></tr><tr class="t4"><td class="rk">23</td><td><a href="https://untappd.com/search?q=Double+Mountain&amp;type=brewery" target="_blank" rel="noopener">Double Mountain</a> <span class="chip">Out-of-town</span></td><td class="score"><span class="bar" style="--w:19%"></span>3.75</td><td class="where">Farther out · 3.1 mi</td><td><span class="chip tv-unk">TV ?</span></td></tr><tr class="t4"><td class="rk">25</td><td><a href="https://untappd.com/HopworksBeer" target="_blank" rel="noopener">Hopworks</a></td><td class="score"><span class="bar" style="--w:13%"></span>3.70</td><td class="where">SE Powell</td><td><span class="chip tv-unk">TV ?</span></td></tr></tbody></table></div>
+  <p class="tierkey">Orange edge marks 4.00 and up. Pizza delivery pick: Bull Run (New Haven style); Boxcar also delivers.</p>
+</section>
+<section id="home" class="sect">
+  <div class="sect-head"><h2>Home base</h2><p>Walkable from the Airbnb, plus the game-day TV spots and pizza.</p></div>
+  <div class="mapwrap"><svg viewBox="0 0 900 440" class="map" role="img" aria-label="Schematic map">
+<rect width="900" height="440" class="m-bg"/>
+<line x1="112" y1="0" x2="112" y2="440" class="m-grid"/>
+<line x1="225" y1="0" x2="225" y2="440" class="m-grid"/>
+<line x1="338" y1="0" x2="338" y2="440" class="m-grid"/>
+<line x1="450" y1="0" x2="450" y2="440" class="m-grid"/>
+<line x1="562" y1="0" x2="562" y2="440" class="m-grid"/>
+<line x1="675" y1="0" x2="675" y2="440" class="m-grid"/>
+<line x1="788" y1="0" x2="788" y2="440" class="m-grid"/>
+<line x1="0" y1="88" x2="900" y2="88" class="m-grid"/>
+<line x1="0" y1="176" x2="900" y2="176" class="m-grid"/>
+<line x1="0" y1="264" x2="900" y2="264" class="m-grid"/>
+<line x1="0" y1="352" x2="900" y2="352" class="m-grid"/>
+<path d="M-642.7,-1190.9 L-260.2,-570.4 L52.7,-198.2 L131.0,174.1 L122.3,546.4 L148.4,918.6 L165.7,1290.9 L209.2,1663.1" class="m-river"/>
+<text x="139" y="174" class="m-lbl">Willamette R.</text>
+<line x1="0" y1="353" x2="900" y2="353" class="m-road"/>
+<text x="892" y="348" class="m-lbl" text-anchor="end">Burnside</text>
+<g class="m-home"><rect x="554.9" y="175.0" width="18" height="18" rx="3" transform="rotate(45 563.9 184.0)"/><text x="577.9" y="188.0" class="m-lbl strong">Airbnb</text></g>
+<g class="pin pin-brewery"><circle cx="623.0" cy="231.2" r="11"/><text x="623.0" y="235.2" text-anchor="middle">1</text></g>
+<g class="pin pin-brewery"><circle cx="546.5" cy="216.3" r="11"/><text x="546.5" y="220.3" text-anchor="middle">2</text></g>
+<g class="pin pin-brewery"><circle cx="423.1" cy="320.5" r="11"/><text x="423.1" y="324.5" text-anchor="middle">3</text></g>
+<g class="pin pin-brewery"><circle cx="596.9" cy="52.5" r="11"/><text x="596.9" y="56.5" text-anchor="middle">4</text></g>
+<g class="pin pin-brewery"><circle cx="657.8" cy="258.5" r="11"/><text x="657.8" y="262.5" text-anchor="middle">5</text></g>
+<g class="pin pin-bar"><circle cx="543.0" cy="52.5" r="11"/><text x="543.0" y="56.5" text-anchor="middle">6</text></g>
+<g class="pin pin-sports"><circle cx="478.7" cy="50.0" r="11"/><text x="478.7" y="54.0" text-anchor="middle">7</text></g>
+<g class="pin pin-sports"><circle cx="230.1" cy="253.5" r="11"/><text x="230.1" y="257.5" text-anchor="middle">8</text></g>
+<g class="pin pin-pizza"><circle cx="643.9" cy="174.1" r="11"/><text x="643.9" y="178.1" text-anchor="middle">9</text></g>
+<g class="pin pin-pizza"><circle cx="650.8" cy="256.0" r="11"/><text x="650.8" y="260.0" text-anchor="middle">10</text></g>
+<g class="pin pin-pizza"><circle cx="661.2" cy="328.0" r="11"/><text x="661.2" y="332.0" text-anchor="middle">11</text></g>
+<g class="pin pin-pizza"><circle cx="669.9" cy="350.3" r="11"/><text x="669.9" y="354.3" text-anchor="middle">12</text></g>
+<g class="pin pin-pizza"><circle cx="657.8" cy="390.0" r="11"/><text x="657.8" y="394.0" text-anchor="middle">13</text></g>
+<g class="pin pin-burger"><circle cx="414.4" cy="332.9" r="11"/><text x="414.4" y="336.9" text-anchor="middle">14</text></g>
+<text x="10" y="430" class="m-lbl">Schematic · N is up · not to street scale</text>
+</svg></div>
+  <div class="cards"><article class="card t-brewery">
+  <div class="card-top"><span class="num pin-brewery">1</span>
+    <div class="card-head"><h4><a href="https://dualitybrewing.com" target="_blank" rel="noopener">Duality Brewing</a></h4>
+    <div class="meta">Brewery · 0.2 mi from Airbnb</div></div></div>
+  <div class="chips"><a class="ut" href="https://untappd.com/search?q=Duality+Brewing+Portland&amp;type=brewery" target="_blank" rel="noopener"><span class="ut-k">Untappd</span><span class="ut-v">3.93</span></a><span class="chip tv-no">No TV</span></div>
+  <p class="note">Creative beers and the best food on this block. Closed Sun–Wed.</p>
+  <div class="foot"><span>Fri 4–9 · Sat 2–9</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Duality+Brewing+715+NE+Lawrence+Ave+Portland+OR" target="_blank" rel="noopener">715 NE Lawrence Ave ↗</a></div>
+</article><article class="card t-brewery">
+  <div class="card-top"><span class="num pin-brewery">2</span>
+    <div class="card-head"><h4><a href="https://www.google.com/maps/search/?api=1&amp;query=Rosenstadt+2117+NE+Oregon+St+Portland+OR" target="_blank" rel="noopener">Rosenstadt</a></h4>
+    <div class="meta">Brewery · 0.1 mi from Airbnb</div></div></div>
+  <div class="chips"><a class="ut" href="https://untappd.com/RosenstadtBrewery" target="_blank" rel="noopener"><span class="ut-k">Untappd</span><span class="ut-v">3.79</span></a><span class="chip tv-no">No TV</span></div>
+  <p class="note">German-style lagers, one block away. Untappd lists Wed–Fri only.</p>
+  <div class="foot"><span>Fri 4–9 · Sat 12–9 (confirm)</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Rosenstadt+2117+NE+Oregon+St+Portland+OR" target="_blank" rel="noopener">2117 NE Oregon St ↗</a></div>
+</article><article class="card t-brewery">
+  <div class="card-top"><span class="num pin-brewery">3</span>
+    <div class="card-head"><h4><a href="https://levelbeer.com" target="_blank" rel="noopener">Level Beer · Buckman Kerns</a></h4>
+    <div class="meta">Brewery · 0.5 mi from Airbnb</div></div></div>
+  <div class="chips"><a class="ut" href="https://untappd.com/LevelBeer" target="_blank" rel="noopener"><span class="ut-k">Untappd</span><span class="ut-v">3.78</span></a><span class="chip tv-unk">TV ?</span></div>
+  <p class="note">Pinball and a food cart pod, including MidCity SmashedBurger.</p>
+  <div class="foot"><span>Fri–Sat 12–10</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Level+Beer+1447+NE+Sandy+Blvd+Portland+OR" target="_blank" rel="noopener">1447 NE Sandy Blvd ↗</a></div>
+</article><article class="card t-brewery">
+  <div class="card-top"><span class="num pin-brewery">4</span>
+    <div class="card-head"><h4><a href="https://steeplejackbeer.com" target="_blank" rel="noopener">Steeplejack Brewing</a></h4>
+    <div class="meta">Brewery · 0.4 mi from Airbnb</div></div><span class="flag">Game pick</span></div>
+  <div class="chips"><a class="ut" href="https://untappd.com/SteeplejackBrewingCompany" target="_blank" rel="noopener"><span class="ut-k">Untappd</span><span class="ut-v">3.77</span></a><span class="chip tv-yes">TV</span></div>
+  <p class="note">Brewpub in a 1909 church. Game room with two 65&quot; TVs, pinball, darts. Call ahead; the room gets booked.</p>
+  <div class="foot"><span>Fri 11–10 · Sat 9–10</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Steeplejack+Brewing+2400+NE+Broadway+Portland+OR" target="_blank" rel="noopener">2400 NE Broadway ↗</a></div>
+</article><article class="card t-brewery">
+  <div class="card-top"><span class="num pin-brewery">5</span>
+    <div class="card-head"><h4><a href="https://migrationbrewing.com" target="_blank" rel="noopener">Migration Brewing</a></h4>
+    <div class="meta">Brewery · 0.3 mi from Airbnb</div></div></div>
+  <div class="chips"><a class="ut" href="https://untappd.com/MigrationBrew" target="_blank" rel="noopener"><span class="ut-k">Untappd</span><span class="ut-v">3.75</span></a><span class="chip tv-unk">TV ?</span></div>
+  <p class="note">Neighborhood brewpub on Glisan.</p>
+  <div class="foot"><span>Check</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Migration+Brewing+2828+NE+Glisan+St+Portland+OR" target="_blank" rel="noopener">2828 NE Glisan St ↗</a></div>
+</article><article class="card t-bar">
+  <div class="card-top"><span class="num pin-bar">6</span>
+    <div class="card-head"><h4><a href="https://www.google.com/maps/search/?api=1&amp;query=Hop+Haven+2130+NE+Broadway+Portland+OR" target="_blank" rel="noopener">Hop Haven</a></h4>
+    <div class="meta">Beer bar · 0.4 mi from Airbnb</div></div></div>
+  <div class="chips"><span class="chip tv-yes">TV</span></div>
+  <p class="note">Neighborhood beer bar, sports on TV, $1 pool. Opens too late for the 12:30 kickoff.</p>
+  <div class="foot"><span>3pm–2am</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Hop+Haven+2130+NE+Broadway+Portland+OR" target="_blank" rel="noopener">2130 NE Broadway ↗</a></div>
+</article><article class="card t-sports">
+  <div class="card-top"><span class="num pin-sports">7</span>
+    <div class="card-head"><h4><a href="https://www.google.com/maps/search/?api=1&amp;query=Broadway+Grill+%26+Brewery+1700+NE+Broadway+Portland+OR" target="_blank" rel="noopener">Broadway Grill &amp; Brewery</a></h4>
+    <div class="meta">Sports bar · 0.4 mi from Airbnb</div></div><span class="flag">Game pick</span></div>
+  <div class="chips"><span class="chip tv-yes">TV</span></div>
+  <p class="note">Sports bar with lots of TVs, pool and shuffleboard. Carries the Ducks.</p>
+  <div class="foot"><span>Sat 9am–midnight</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Broadway+Grill+%26+Brewery+1700+NE+Broadway+Portland+OR" target="_blank" rel="noopener">1700 NE Broadway ↗</a></div>
+</article><article class="card t-sports">
+  <div class="card-top"><span class="num pin-sports">8</span>
+    <div class="card-head"><h4><a href="https://www.google.com/maps/search/?api=1&amp;query=Spirit+of+77+500+NE+MLK+Jr+Blvd+Portland+OR" target="_blank" rel="noopener">Spirit of 77</a></h4>
+    <div class="meta">Sports bar · 0.9 mi from Airbnb</div></div><span class="flag">Game pick</span></div>
+  <div class="chips"><span class="chip tv-yes">TV</span></div>
+  <p class="note">Big sports bar with a projection screen. Official Portland Ducks watch spot, so expect a loud Oregon crowd.</p>
+  <div class="foot"><span>Check</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Spirit+of+77+500+NE+MLK+Jr+Blvd+Portland+OR" target="_blank" rel="noopener">500 NE MLK Jr Blvd ↗</a></div>
+</article><article class="card t-pizza">
+  <div class="card-top"><span class="num pin-pizza">9</span>
+    <div class="card-head"><h4><a href="https://www.google.com/maps/search/?api=1&amp;query=Boxcar+Pizza+2701+NE+Sandy+Blvd+Portland+OR" target="_blank" rel="noopener">Boxcar Pizza</a></h4>
+    <div class="meta">Pizza · 0.2 mi from Airbnb</div></div></div>
+  <div class="chips"><span class="chip tv-unk">TV ?</span></div>
+  <p class="note">Detroit-style, closest pizza. 100% vegan, still well liked by meat-eaters. Delivers.</p>
+  <div class="foot"><span>Check</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Boxcar+Pizza+2701+NE+Sandy+Blvd+Portland+OR" target="_blank" rel="noopener">2701 NE Sandy Blvd ↗</a></div>
+</article><article class="card t-pizza">
+  <div class="card-top"><span class="num pin-pizza">10</span>
+    <div class="card-head"><h4><a href="https://www.google.com/maps/search/?api=1&amp;query=Dove+Vivi+2727+NE+Glisan+St+Portland+OR" target="_blank" rel="noopener">Dove Vivi</a></h4>
+    <div class="meta">Pizza · 0.3 mi from Airbnb</div></div></div>
+  <div class="chips"><span class="chip tv-no">No TV</span></div>
+  <p class="note">Cornmeal crust, a Portland classic. Get the corn pizza.</p>
+  <div class="foot"><span>4–9</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Dove+Vivi+2727+NE+Glisan+St+Portland+OR" target="_blank" rel="noopener">2727 NE Glisan St ↗</a></div>
+</article><article class="card t-pizza">
+  <div class="card-top"><span class="num pin-pizza">11</span>
+    <div class="card-head"><h4><a href="https://www.google.com/maps/search/?api=1&amp;query=Bull+Run+Pizza+108+NE+28th+Ave+Portland+OR" target="_blank" rel="noopener">Bull Run Pizza</a></h4>
+    <div class="meta">Pizza · 0.5 mi from Airbnb</div></div></div>
+  <div class="chips"><span class="chip tv-no">No TV</span></div>
+  <p class="note">New Haven style. Best delivery pick.</p>
+  <div class="foot"><span>Fri–Sat 5–10</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Bull+Run+Pizza+108+NE+28th+Ave+Portland+OR" target="_blank" rel="noopener">108 NE 28th Ave ↗</a></div>
+</article><article class="card t-pizza">
+  <div class="card-top"><span class="num pin-pizza">12</span>
+    <div class="card-head"><h4><a href="https://www.google.com/maps/search/?api=1&amp;query=Grana+2811+E+Burnside+St+Portland+OR" target="_blank" rel="noopener">Grana</a></h4>
+    <div class="meta">Pizza · 0.5 mi from Airbnb</div></div></div>
+  <div class="chips"><span class="chip tv-no">No TV</span></div>
+  <p class="note">Neapolitan. Reservations help.</p>
+  <div class="foot"><span>5–9</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Grana+2811+E+Burnside+St+Portland+OR" target="_blank" rel="noopener">2811 E Burnside St ↗</a></div>
+</article><article class="card t-pizza">
+  <div class="card-top"><span class="num pin-pizza">13</span>
+    <div class="card-head"><h4><a href="https://www.google.com/maps/search/?api=1&amp;query=Ken%27s+Artisan+Pizza+304+SE+28th+Ave+Portland+OR" target="_blank" rel="noopener">Ken&#x27;s Artisan Pizza</a></h4>
+    <div class="meta">Pizza · 0.6 mi from Airbnb</div></div></div>
+  <div class="chips"><span class="chip tv-no">No TV</span></div>
+  <p class="note">The most famous pizza on the east side. Line forms before opening.</p>
+  <div class="foot"><span>Opens 5</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Ken%27s+Artisan+Pizza+304+SE+28th+Ave+Portland+OR" target="_blank" rel="noopener">304 SE 28th Ave ↗</a></div>
+</article><article class="card t-burger">
+  <div class="card-top"><span class="num pin-burger">14</span>
+    <div class="card-head"><h4><a href="https://www.google.com/maps/search/?api=1&amp;query=MidCity+SmashedBurger+1447+NE+Sandy+Blvd+%28at+Level%29+Portland+OR" target="_blank" rel="noopener">MidCity SmashedBurger</a></h4>
+    <div class="meta">Burger · 0.6 mi from Airbnb</div></div></div>
+  <div class="chips"><span class="chip tv-unk">TV ?</span></div>
+  <p class="note">Smash burger cart at Level Beer. Pair with pinball and a pint.</p>
+  <div class="foot"><span>Closes 8pm</span><a href="https://www.google.com/maps/search/?api=1&amp;query=MidCity+SmashedBurger+1447+NE+Sandy+Blvd+%28at+Level%29+Portland+OR" target="_blank" rel="noopener">1447 NE Sandy Blvd (at Level) ↗</a></div>
+</article></div>
+</section><section id="east" class="sect">
+  <div class="sect-head"><h2>Central Eastside &amp; Belmont</h2><p>20–30 min walk or a 5–8 min Uber. The densest brewery cluster.</p></div>
+  <div class="mapwrap"><svg viewBox="0 0 900 440" class="map" role="img" aria-label="Schematic map">
+<rect width="900" height="440" class="m-bg"/>
+<line x1="112" y1="0" x2="112" y2="440" class="m-grid"/>
+<line x1="225" y1="0" x2="225" y2="440" class="m-grid"/>
+<line x1="338" y1="0" x2="338" y2="440" class="m-grid"/>
+<line x1="450" y1="0" x2="450" y2="440" class="m-grid"/>
+<line x1="562" y1="0" x2="562" y2="440" class="m-grid"/>
+<line x1="675" y1="0" x2="675" y2="440" class="m-grid"/>
+<line x1="788" y1="0" x2="788" y2="440" class="m-grid"/>
+<line x1="0" y1="88" x2="900" y2="88" class="m-grid"/>
+<line x1="0" y1="176" x2="900" y2="176" class="m-grid"/>
+<line x1="0" y1="264" x2="900" y2="264" class="m-grid"/>
+<line x1="0" y1="352" x2="900" y2="352" class="m-grid"/>
+<path d="M-241.2,-709.5 L-29.8,-366.8 L143.1,-161.1 L186.3,44.5 L181.5,250.2 L195.9,455.8 L205.5,661.5 L229.5,867.1" class="m-river"/>
+<text x="190" y="250" class="m-lbl">Willamette R.</text>
+<line x1="0" y1="143" x2="900" y2="143" class="m-road"/>
+<text x="892" y="138" class="m-lbl" text-anchor="end">Burnside</text>
+<g class="m-home"><rect x="416.5" y="41.0" width="18" height="18" rx="3" transform="rotate(45 425.5 50.0)"/><text x="439.5" y="54.0" class="m-lbl strong">Airbnb</text></g>
+<g class="pin pin-brewery"><circle cx="291.0" cy="366.7" r="11"/><text x="291.0" y="370.7" text-anchor="middle">1</text></g>
+<g class="pin pin-brewery"><circle cx="340.0" cy="189.8" r="11"/><text x="340.0" y="193.8" text-anchor="middle">2</text></g>
+<g class="pin pin-brewery"><circle cx="223.8" cy="173.4" r="11"/><text x="223.8" y="177.4" text-anchor="middle">3</text></g>
+<g class="pin pin-brewery"><circle cx="268.0" cy="232.3" r="11"/><text x="268.0" y="236.3" text-anchor="middle">4</text></g>
+<g class="pin pin-brewery"><circle cx="454.3" cy="228.2" r="11"/><text x="454.3" y="232.2" text-anchor="middle">5</text></g>
+<g class="pin pin-brewery"><circle cx="307.3" cy="364.0" r="11"/><text x="307.3" y="368.0" text-anchor="middle">6</text></g>
+<g class="pin pin-bar"><circle cx="269.9" cy="220.0" r="11"/><text x="269.9" y="224.0" text-anchor="middle">7</text></g>
+<g class="pin pin-bar"><circle cx="681.0" cy="195.3" r="11"/><text x="681.0" y="199.3" text-anchor="middle">8</text></g>
+<g class="pin pin-bar"><circle cx="688.7" cy="233.7" r="11"/><text x="688.7" y="237.7" text-anchor="middle">9</text></g>
+<g class="pin pin-bar"><circle cx="508.1" cy="390.0" r="11"/><text x="508.1" y="394.0" text-anchor="middle">10</text></g>
+<g class="pin pin-bar"><circle cx="311.2" cy="390.0" r="11"/><text x="311.2" y="394.0" text-anchor="middle">11</text></g>
+<g class="pin pin-burger"><circle cx="211.3" cy="285.8" r="11"/><text x="211.3" y="289.8" text-anchor="middle">12</text></g>
+<text x="10" y="430" class="m-lbl">Schematic · N is up · not to street scale</text>
+</svg></div>
+  <div class="cards"><article class="card t-brewery">
+  <div class="card-top"><span class="num pin-brewery">1</span>
+    <div class="card-head"><h4><a href="https://www.google.com/maps/search/?api=1&amp;query=Everywhere+Beer+Co.+920+SE+Caruthers+St+Portland+OR" target="_blank" rel="noopener">Everywhere Beer Co.</a></h4>
+    <div class="meta">Brewery · 1.7 mi from Airbnb</div></div><span class="flag">Priority</span></div>
+  <div class="chips"><a class="ut" href="https://untappd.com/search?q=Everywhere+Beer&amp;type=brewery" target="_blank" rel="noopener"><span class="ut-k">Untappd</span><span class="ut-v">4.16</span></a><span class="chip tv-unk">TV ?</span><span class="chip">From Orange County, CA</span></div>
+  <p class="note">Orange County brewery, GABF 2024 Brewery of the Year in its class. Weekend burger pop-ups.</p>
+  <div class="foot"><span>Check</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Everywhere+Beer+Co.+920+SE+Caruthers+St+Portland+OR" target="_blank" rel="noopener">920 SE Caruthers St ↗</a></div>
+</article><article class="card t-brewery">
+  <div class="card-top"><span class="num pin-brewery">2</span>
+    <div class="card-head"><h4><a href="https://grandfirbrewing.com" target="_blank" rel="noopener">Grand Fir Brewing</a></h4>
+    <div class="meta">Brewery · 0.8 mi from Airbnb</div></div><span class="flag">Priority</span></div>
+  <div class="chips"><a class="ut" href="https://untappd.com/w/grand-fir-brewing/532569" target="_blank" rel="noopener"><span class="ut-k">Untappd</span><span class="ut-v">3.98</span></a><span class="chip tv-unk">TV ?</span></div>
+  <p class="note">West Coast IPAs, smoked fried chicken. Beervana&#x27;s 2024 Brewery of the Year.</p>
+  <div class="foot"><span>Fri–Sat 12–10</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Grand+Fir+Brewing+1403+SE+Stark+St+Portland+OR" target="_blank" rel="noopener">1403 SE Stark St ↗</a></div>
+</article><article class="card t-brewery">
+  <div class="card-top"><span class="num pin-brewery">3</span>
+    <div class="card-head"><h4><a href="https://wayfinder.beer" target="_blank" rel="noopener">Wayfinder Beer</a></h4>
+    <div class="meta">Brewery · 1.2 mi from Airbnb</div></div></div>
+  <div class="chips"><a class="ut" href="https://untappd.com/Wayfinder_Crispies4lyfe" target="_blank" rel="noopener"><span class="ut-k">Untappd</span><span class="ut-v">3.92</span></a><span class="chip tv-unk">TV ?</span></div>
+  <p class="note">Lager specialists, inventors of the Cold IPA. Fire pit deck.</p>
+  <div class="foot"><span>Fri–Sat 12–10</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Wayfinder+Beer+304+SE+2nd+Ave+Portland+OR" target="_blank" rel="noopener">304 SE 2nd Ave ↗</a></div>
+</article><article class="card t-brewery">
+  <div class="card-top"><span class="num pin-brewery">4</span>
+    <div class="card-head"><h4><a href="https://livinghausbeer.com" target="_blank" rel="noopener">Living Häus + Hetty Alice</a></h4>
+    <div class="meta">Brewery · 1.2 mi from Airbnb</div></div></div>
+  <div class="chips"><a class="ut" href="https://untappd.com/LivingHausBeer" target="_blank" rel="noopener"><span class="ut-k">Untappd</span><span class="ut-v">3.92</span></a><a class="ut" href="https://untappd.com/search?q=Hetty+Alice&amp;type=brewery" target="_blank" rel="noopener"><span class="ut-k">Hetty Alice</span><span class="ut-v">3.93</span></a><span class="chip tv-no">No TV</span></div>
+  <p class="note">Two breweries, one taproom. Lagers and IPAs.</p>
+  <div class="foot"><span>Fri 4–10 · Sat 1–10</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Living+H%C3%A4us+%2B+Hetty+Alice+628+SE+Belmont+St+Portland+OR" target="_blank" rel="noopener">628 SE Belmont St ↗</a></div>
+</article><article class="card t-brewery">
+  <div class="card-top"><span class="num pin-brewery">5</span>
+    <div class="card-head"><h4><a href="https://forelandbeer.com" target="_blank" rel="noopener">ForeLand · The Study</a></h4>
+    <div class="meta">Brewery · 0.9 mi from Airbnb</div></div></div>
+  <div class="chips"><a class="ut" href="https://untappd.com/search?q=ForeLand+Beer&amp;type=brewery" target="_blank" rel="noopener"><span class="ut-k">Untappd</span><span class="ut-v">3.89</span></a><span class="chip tv-yes">TV</span><span class="chip">From McMinnville</span></div>
+  <p class="note">Craftsman house taproom, reopened Jan 2026 with a bar and TVs.</p>
+  <div class="foot"><span>Wed–Sun 3–9</span><a href="https://www.google.com/maps/search/?api=1&amp;query=ForeLand+2511+SE+Belmont+St+Portland+OR" target="_blank" rel="noopener">2511 SE Belmont St ↗</a></div>
+</article><article class="card t-brewery">
+  <div class="card-top"><span class="num pin-brewery">6</span>
+    <div class="card-head"><h4><a href="https://baerlicbrewing.com" target="_blank" rel="noopener">Baerlic Brewing</a></h4>
+    <div class="meta">Brewery · 1.7 mi from Airbnb</div></div></div>
+  <div class="chips"><a class="ut" href="https://untappd.com/BaerlicBrewingCo" target="_blank" rel="noopener"><span class="ut-k">Untappd</span><span class="ut-v">3.83</span></a><span class="chip tv-unk">TV ?</span></div>
+  <p class="note">Big hall with a fireplace. BeerMongers is a block away.</p>
+  <div class="foot"><span>Check</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Baerlic+Brewing+2235+SE+11th+Ave+Portland+OR" target="_blank" rel="noopener">2235 SE 11th Ave ↗</a></div>
+</article><article class="card t-bar">
+  <div class="card-top"><span class="num pin-bar">7</span>
+    <div class="card-head"><h4><a href="https://www.google.com/maps/search/?api=1&amp;query=Loyal+Legion+710+SE+6th+Ave+Portland+OR" target="_blank" rel="noopener">Loyal Legion</a></h4>
+    <div class="meta">Beer bar · 1.2 mi from Airbnb</div></div></div>
+  <div class="chips"><span class="chip tv-no">No TV</span></div>
+  <p class="note">Big all-Oregon tap-list beer hall. Usually no games on.</p>
+  <div class="foot"><span>Check</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Loyal+Legion+710+SE+6th+Ave+Portland+OR" target="_blank" rel="noopener">710 SE 6th Ave ↗</a></div>
+</article><article class="card t-bar">
+  <div class="card-top"><span class="num pin-bar">8</span>
+    <div class="card-head"><h4><a href="https://www.belmont-station.com" target="_blank" rel="noopener">Belmont Station</a></h4>
+    <div class="meta">Beer bar · 1.5 mi from Airbnb</div></div><span class="flag">Top beer bar</span></div>
+  <div class="chips"><span class="chip tv-unk">TV ?</span></div>
+  <p class="note">USA Today #6 beer bar in the US. Bottle shop plus about 25 taps.</p>
+  <div class="foot"><span>11–10</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Belmont+Station+4500+SE+Stark+St+Portland+OR" target="_blank" rel="noopener">4500 SE Stark St ↗</a></div>
+</article><article class="card t-bar">
+  <div class="card-top"><span class="num pin-bar">9</span>
+    <div class="card-head"><h4><a href="https://www.google.com/maps/search/?api=1&amp;query=Horse+Brass+Pub+4534+SE+Belmont+St+Portland+OR" target="_blank" rel="noopener">Horse Brass Pub</a></h4>
+    <div class="meta">Beer bar · 1.6 mi from Airbnb</div></div></div>
+  <div class="chips"><span class="chip tv-unk">TV ?</span></div>
+  <p class="note">USA Today #10. English pub, open since 1976.</p>
+  <div class="foot"><span>Check</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Horse+Brass+Pub+4534+SE+Belmont+St+Portland+OR" target="_blank" rel="noopener">4534 SE Belmont St ↗</a></div>
+</article><article class="card t-bar">
+  <div class="card-top"><span class="num pin-bar">10</span>
+    <div class="card-head"><h4><a href="https://www.google.com/maps/search/?api=1&amp;query=Imperial+Bottle+Shop+3090+SE+Division+St+Portland+OR" target="_blank" rel="noopener">Imperial Bottle Shop</a></h4>
+    <div class="meta">Beer bar · 1.8 mi from Airbnb</div></div></div>
+  <div class="chips"><span class="chip tv-unk">TV ?</span></div>
+  <p class="note">Bottle shop and taproom on Division.</p>
+  <div class="foot"><span>Check</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Imperial+Bottle+Shop+3090+SE+Division+St+Portland+OR" target="_blank" rel="noopener">3090 SE Division St ↗</a></div>
+</article><article class="card t-bar">
+  <div class="card-top"><span class="num pin-bar">11</span>
+    <div class="card-head"><h4><a href="https://www.google.com/maps/search/?api=1&amp;query=BeerMongers+1125+SE+Division+St+Portland+OR" target="_blank" rel="noopener">BeerMongers</a></h4>
+    <div class="meta">Beer bar · 1.8 mi from Airbnb</div></div></div>
+  <div class="chips"><span class="chip tv-unk">TV ?</span></div>
+  <p class="note">Bottle shop and taps next to Baerlic.</p>
+  <div class="foot"><span>Check</span><a href="https://www.google.com/maps/search/?api=1&amp;query=BeerMongers+1125+SE+Division+St+Portland+OR" target="_blank" rel="noopener">1125 SE Division St ↗</a></div>
+</article><article class="card t-burger">
+  <div class="card-top"><span class="num pin-burger">12</span>
+    <div class="card-head"><h4><a href="https://www.google.com/maps/search/?api=1&amp;query=Wolf%27s+Head+80+SE+Madison+St+Portland+OR" target="_blank" rel="noopener">Wolf&#x27;s Head</a></h4>
+    <div class="meta">Burger · 1.6 mi from Airbnb</div></div></div>
+  <div class="chips"><span class="chip tv-unk">TV ?</span></div>
+  <p class="note">Smash burgers and curly fries near Wayfinder.</p>
+  <div class="foot"><span>Fri till 8 · Sat till 6</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Wolf%27s+Head+80+SE+Madison+St+Portland+OR" target="_blank" rel="noopener">80 SE Madison St ↗</a></div>
+</article></div>
+</section><section id="nw" class="sect">
+  <div class="sect-head"><h2>Northwest Uber run</h2><p>10–15 min Uber. Brujos and Great Notion are the two highest-rated stops of the trip.</p></div>
+  <div class="mapwrap"><svg viewBox="0 0 900 374" class="map" role="img" aria-label="Schematic map">
+<rect width="900" height="374" class="m-bg"/>
+<line x1="112" y1="0" x2="112" y2="374" class="m-grid"/>
+<line x1="225" y1="0" x2="225" y2="374" class="m-grid"/>
+<line x1="338" y1="0" x2="338" y2="374" class="m-grid"/>
+<line x1="450" y1="0" x2="450" y2="374" class="m-grid"/>
+<line x1="562" y1="0" x2="562" y2="374" class="m-grid"/>
+<line x1="675" y1="0" x2="675" y2="374" class="m-grid"/>
+<line x1="788" y1="0" x2="788" y2="374" class="m-grid"/>
+<line x1="0" y1="75" x2="900" y2="75" class="m-grid"/>
+<line x1="0" y1="150" x2="900" y2="150" class="m-grid"/>
+<line x1="0" y1="225" x2="900" y2="225" class="m-grid"/>
+<line x1="0" y1="299" x2="900" y2="299" class="m-grid"/>
+<path d="M11.3,-719.4 L277.2,-288.1 L494.7,-29.4 L549.1,229.4 L543.1,488.2 L561.2,747.0 L573.3,1005.7 L603.5,1264.5" class="m-river"/>
+<text x="557" y="229" class="m-lbl">Willamette R.</text>
+<line x1="0" y1="354" x2="900" y2="354" class="m-road"/>
+<text x="892" y="349" class="m-lbl" text-anchor="end">Burnside</text>
+<g class="m-home"><rect x="841.0" y="227.3" width="18" height="18" rx="3" transform="rotate(45 850.0 236.3)"/><text x="864.0" y="240.3" class="m-lbl strong">Airbnb</text></g>
+<g class="pin pin-brewery"><circle cx="153.9" cy="94.9" r="11"/><text x="153.9" y="98.9" text-anchor="middle">1</text></g>
+<g class="pin pin-brewery"><circle cx="50.0" cy="50.0" r="11"/><text x="50.0" y="54.0" text-anchor="middle">2</text></g>
+<g class="pin pin-brewery"><circle cx="198.6" cy="160.4" r="11"/><text x="198.6" y="164.4" text-anchor="middle">3</text></g>
+<g class="pin pin-brewery"><circle cx="373.9" cy="324.3" r="11"/><text x="373.9" y="328.3" text-anchor="middle">4</text></g>
+<g class="pin pin-bar"><circle cx="168.4" cy="172.5" r="11"/><text x="168.4" y="176.5" text-anchor="middle">5</text></g>
+<text x="10" y="364" class="m-lbl">Schematic · N is up · not to street scale</text>
+</svg></div>
+  <div class="cards"><article class="card t-brewery">
+  <div class="card-top"><span class="num pin-brewery">1</span>
+    <div class="card-head"><h4><a href="https://brujosbrewing.com" target="_blank" rel="noopener">Brujos Brewing</a></h4>
+    <div class="meta">Brewery · 2.8 mi from Airbnb</div></div><span class="flag">Priority</span></div>
+  <div class="chips"><a class="ut" href="https://untappd.com/BrujosBrewing" target="_blank" rel="noopener"><span class="ut-k">Untappd</span><span class="ut-v">4.38</span></a><span class="chip tv-no">No TV</span></div>
+  <p class="note">#1 in Portland, top 25 worldwide on Untappd. Tacos on site. Get there early.</p>
+  <div class="foot"><span>Fri–Sat 12–10</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Brujos+Brewing+2377+NW+Wilson+St+Portland+OR" target="_blank" rel="noopener">2377 NW Wilson St ↗</a></div>
+</article><article class="card t-brewery">
+  <div class="card-top"><span class="num pin-brewery">2</span>
+    <div class="card-head"><h4><a href="https://greatnotion.com" target="_blank" rel="noopener">Great Notion · NW 28th</a></h4>
+    <div class="meta">Brewery · 3.3 mi from Airbnb</div></div><span class="flag">Priority</span></div>
+  <div class="chips"><a class="ut" href="https://untappd.com/GreatNotionBrewing" target="_blank" rel="noopener"><span class="ut-k">Untappd</span><span class="ut-v">4.13</span></a><span class="chip tv-unk">TV ?</span></div>
+  <p class="note">Hazies, fruited sours, pastry stouts. Pizza.</p>
+  <div class="foot"><span>Till 9</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Great+Notion+2444+NW+28th+Ave+Portland+OR" target="_blank" rel="noopener">2444 NW 28th Ave ↗</a></div>
+</article><article class="card t-brewery">
+  <div class="card-top"><span class="num pin-brewery">3</span>
+    <div class="card-head"><h4><a href="https://breakside.com" target="_blank" rel="noopener">Breakside · Slabtown</a></h4>
+    <div class="meta">Brewery · 2.6 mi from Airbnb</div></div></div>
+  <div class="chips"><a class="ut" href="https://untappd.com/BreaksideBrewery" target="_blank" rel="noopener"><span class="ut-k">Untappd</span><span class="ut-v">3.88</span></a><span class="chip tv-unk">TV ?</span></div>
+  <p class="note">Portland&#x27;s most decorated brewery.</p>
+  <div class="foot"><span>11:30–9</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Breakside+1570+NW+22nd+Ave+Portland+OR" target="_blank" rel="noopener">1570 NW 22nd Ave ↗</a></div>
+</article><article class="card t-brewery">
+  <div class="card-top"><span class="num pin-brewery">4</span>
+    <div class="card-head"><h4><a href="https://deschutesbrewery.com" target="_blank" rel="noopener">Deschutes Public House</a></h4>
+    <div class="meta">Brewery · 1.9 mi from Airbnb</div></div></div>
+  <div class="chips"><a class="ut" href="https://untappd.com/DeschutesBrewery" target="_blank" rel="noopener"><span class="ut-k">Untappd</span><span class="ut-v">3.80</span></a><span class="chip tv-unk">TV ?</span><span class="chip">From Bend</span></div>
+  <p class="note">Bend&#x27;s flagship brewery, Pearl District pub. Out-of-town.</p>
+  <div class="foot"><span>Sat 11–11</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Deschutes+Public+House+210+NW+11th+Ave+Portland+OR" target="_blank" rel="noopener">210 NW 11th Ave ↗</a></div>
+</article><article class="card t-bar">
+  <div class="card-top"><span class="num pin-bar">5</span>
+    <div class="card-head"><h4><a href="https://www.google.com/maps/search/?api=1&amp;query=Proper+Pint+2251+NW+Quimby+St+Portland+OR" target="_blank" rel="noopener">Proper Pint · Slabtown</a></h4>
+    <div class="meta">Beer bar · 2.7 mi from Airbnb</div></div></div>
+  <div class="chips"><span class="chip tv-unk">TV ?</span></div>
+  <p class="note">Rotating tap list between Breakside and Brujos.</p>
+  <div class="foot"><span>Fri–Sat till midnight</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Proper+Pint+2251+NW+Quimby+St+Portland+OR" target="_blank" rel="noopener">2251 NW Quimby St ↗</a></div>
+</article></div>
+</section><section id="far" class="sect">
+  <div class="sect-head"><h2>Farther out</h2><p>Worth it only for a specific target. Pair Ruse, Away Days and Champs.</p></div>
+  <div class="mapwrap"><svg viewBox="0 0 900 440" class="map" role="img" aria-label="Schematic map">
+<rect width="900" height="440" class="m-bg"/>
+<line x1="112" y1="0" x2="112" y2="440" class="m-grid"/>
+<line x1="225" y1="0" x2="225" y2="440" class="m-grid"/>
+<line x1="338" y1="0" x2="338" y2="440" class="m-grid"/>
+<line x1="450" y1="0" x2="450" y2="440" class="m-grid"/>
+<line x1="562" y1="0" x2="562" y2="440" class="m-grid"/>
+<line x1="675" y1="0" x2="675" y2="440" class="m-grid"/>
+<line x1="788" y1="0" x2="788" y2="440" class="m-grid"/>
+<line x1="0" y1="88" x2="900" y2="88" class="m-grid"/>
+<line x1="0" y1="176" x2="900" y2="176" class="m-grid"/>
+<line x1="0" y1="264" x2="900" y2="264" class="m-grid"/>
+<line x1="0" y1="352" x2="900" y2="352" class="m-grid"/>
+<path d="M215.4,-46.9 L282.1,61.2 L336.7,126.1 L350.3,191.0 L348.8,255.9 L353.3,320.8 L356.4,385.7 L363.9,450.6" class="m-river"/>
+<text x="357" y="256" class="m-lbl">Willamette R.</text>
+<line x1="0" y1="222" x2="900" y2="222" class="m-road"/>
+<text x="892" y="217" class="m-lbl" text-anchor="end">Burnside</text>
+<g class="m-home"><rect x="416.8" y="183.7" width="18" height="18" rx="3" transform="rotate(45 425.8 192.7)"/><text x="439.8" y="196.7" class="m-lbl strong">Airbnb</text></g>
+<g class="pin pin-brewery"><circle cx="425.8" cy="66.0" r="11"/><text x="425.8" y="70.0" text-anchor="middle">1</text></g>
+<g class="pin pin-brewery"><circle cx="408.8" cy="373.1" r="11"/><text x="408.8" y="377.1" text-anchor="middle">2</text></g>
+<g class="pin pin-brewery"><circle cx="604.9" cy="236.4" r="11"/><text x="604.9" y="240.4" text-anchor="middle">3</text></g>
+<g class="pin pin-brewery"><circle cx="396.1" cy="355.4" r="11"/><text x="396.1" y="359.4" text-anchor="middle">4</text></g>
+<g class="pin pin-brewery"><circle cx="466.1" cy="300.0" r="11"/><text x="466.1" y="304.0" text-anchor="middle">5</text></g>
+<g class="pin pin-brewery"><circle cx="330.6" cy="113.2" r="11"/><text x="330.6" y="117.2" text-anchor="middle">6</text></g>
+<g class="pin pin-brewery"><circle cx="433.6" cy="390.0" r="11"/><text x="433.6" y="394.0" text-anchor="middle">7</text></g>
+<g class="pin pin-brewery"><circle cx="295.1" cy="50.0" r="11"/><text x="295.1" y="54.0" text-anchor="middle">8</text></g>
+<g class="pin pin-burger"><circle cx="394.2" cy="357.6" r="11"/><text x="394.2" y="361.6" text-anchor="middle">9</text></g>
+<text x="10" y="430" class="m-lbl">Schematic · N is up · not to street scale</text>
+</svg></div>
+  <div class="cards"><article class="card t-brewery">
+  <div class="card-top"><span class="num pin-brewery">1</span>
+    <div class="card-head"><h4><a href="https://greatnotion.com" target="_blank" rel="noopener">Great Notion · Alberta</a></h4>
+    <div class="meta">Brewery · 2.0 mi from Airbnb</div></div><span class="flag">Priority</span></div>
+  <div class="chips"><a class="ut" href="https://untappd.com/GreatNotionBrewing" target="_blank" rel="noopener"><span class="ut-k">Untappd</span><span class="ut-v">4.13</span></a><span class="chip tv-unk">TV ?</span></div>
+  <p class="note">The original. Closest Great Notion to the Airbnb, about 2 mi north.</p>
+  <div class="foot"><span>Check</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Great+Notion+2204+NE+Alberta+St+Portland+OR" target="_blank" rel="noopener">2204 NE Alberta St ↗</a></div>
+</article><article class="card t-brewery">
+  <div class="card-top"><span class="num pin-brewery">2</span>
+    <div class="card-head"><h4><a href="https://rusebrewing.com" target="_blank" rel="noopener">Ruse Brewing</a></h4>
+    <div class="meta">Brewery · 2.9 mi from Airbnb</div></div><span class="flag">Priority</span></div>
+  <div class="chips"><a class="ut" href="https://untappd.com/RuseBrewing" target="_blank" rel="noopener"><span class="ut-k">Untappd</span><span class="ut-v">4.04</span></a><span class="chip tv-unk">TV ?</span></div>
+  <p class="note">Hazy IPA specialists. Pizza on weekends.</p>
+  <div class="foot"><span>Check</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Ruse+Brewing+4784+SE+17th+Ave+Portland+OR" target="_blank" rel="noopener">4784 SE 17th Ave ↗</a></div>
+</article><article class="card t-brewery">
+  <div class="card-top"><span class="num pin-brewery">3</span>
+    <div class="card-head"><h4><a href="https://threshold.beer" target="_blank" rel="noopener">Threshold Brewing</a></h4>
+    <div class="meta">Brewery · 2.9 mi from Airbnb</div></div></div>
+  <div class="chips"><a class="ut" href="https://untappd.com/ThresholdBrewing" target="_blank" rel="noopener"><span class="ut-k">Untappd</span><span class="ut-v">3.86</span></a><span class="chip tv-unk">TV ?</span></div>
+  <p class="note">Mixed culture and Polish beers, pierogi. Montavilla.</p>
+  <div class="foot"><span>Check</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Threshold+Brewing+403+SE+79th+Ave+Portland+OR" target="_blank" rel="noopener">403 SE 79th Ave ↗</a></div>
+</article><article class="card t-brewery">
+  <div class="card-top"><span class="num pin-brewery">4</span>
+    <div class="card-head"><h4><a href="https://www.google.com/maps/search/?api=1&amp;query=Away+Days+Brewing+1115+SE+Cora+St+Portland+OR" target="_blank" rel="noopener">Away Days Brewing</a></h4>
+    <div class="meta">Brewery · 2.6 mi from Airbnb</div></div></div>
+  <div class="chips"><a class="ut" href="https://untappd.com/AwayDaysBrewing" target="_blank" rel="noopener"><span class="ut-k">Untappd</span><span class="ut-v">3.84</span></a><span class="chip tv-unk">TV ?</span></div>
+  <p class="note">British-style ales, soccer pub vibe. Half mile from Ruse.</p>
+  <div class="foot"><span>Check</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Away+Days+Brewing+1115+SE+Cora+St+Portland+OR" target="_blank" rel="noopener">1115 SE Cora St ↗</a></div>
+</article><article class="card t-brewery">
+  <div class="card-top"><span class="num pin-brewery">5</span>
+    <div class="card-head"><h4><a href="https://littlebeastbrewing.com" target="_blank" rel="noopener">Little Beast Beer Garden</a></h4>
+    <div class="meta">Brewery · 1.8 mi from Airbnb</div></div></div>
+  <div class="chips"><a class="ut" href="https://untappd.com/Little_Beast_Brewing" target="_blank" rel="noopener"><span class="ut-k">Untappd</span><span class="ut-v">3.83</span></a><span class="chip tv-unk">TV ?</span></div>
+  <p class="note">Wild and farmhouse ales in a bungalow beer garden.</p>
+  <div class="foot"><span>Check</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Little+Beast+Beer+Garden+3412+SE+Division+St+Portland+OR" target="_blank" rel="noopener">3412 SE Division St ↗</a></div>
+</article><article class="card t-brewery">
+  <div class="card-top"><span class="num pin-brewery">6</span>
+    <div class="card-head"><h4><a href="https://vonebertbrewing.com" target="_blank" rel="noopener">Von Ebert · Mississippi</a></h4>
+    <div class="meta">Brewery · 2.0 mi from Airbnb</div></div></div>
+  <div class="chips"><a class="ut" href="https://untappd.com/VonEbertBrewing" target="_blank" rel="noopener"><span class="ut-k">Untappd</span><span class="ut-v">3.83</span></a><span class="chip tv-unk">TV ?</span></div>
+  <p class="note">IPAs and lagers.</p>
+  <div class="foot"><span>Check</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Von+Ebert+825+N+Cook+St+Portland+OR" target="_blank" rel="noopener">825 N Cook St ↗</a></div>
+</article><article class="card t-brewery">
+  <div class="card-top"><span class="num pin-brewery">7</span>
+    <div class="card-head"><h4><a href="https://giganticbrewing.com" target="_blank" rel="noopener">Gigantic Brewing</a></h4>
+    <div class="meta">Brewery · 3.2 mi from Airbnb</div></div></div>
+  <div class="chips"><a class="ut" href="https://untappd.com/GiganticBrewingCompany" target="_blank" rel="noopener"><span class="ut-k">Untappd</span><span class="ut-v">3.80</span></a><span class="chip tv-unk">TV ?</span></div>
+  <p class="note">IPAs, beer garden.</p>
+  <div class="foot"><span>Fri 2–10 · Sat 12–10</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Gigantic+Brewing+5224+SE+26th+Ave+Portland+OR" target="_blank" rel="noopener">5224 SE 26th Ave ↗</a></div>
+</article><article class="card t-brewery">
+  <div class="card-top"><span class="num pin-brewery">8</span>
+    <div class="card-head"><h4><a href="https://doublemountainbrewery.com" target="_blank" rel="noopener">Double Mountain · Overlook</a></h4>
+    <div class="meta">Brewery · 3.1 mi from Airbnb</div></div></div>
+  <div class="chips"><a class="ut" href="https://untappd.com/search?q=Double+Mountain&amp;type=brewery" target="_blank" rel="noopener"><span class="ut-k">Untappd</span><span class="ut-v">3.75</span></a><span class="chip tv-unk">TV ?</span><span class="chip">From Hood River</span></div>
+  <p class="note">Hood River brewery outpost, New Haven pizza.</p>
+  <div class="foot"><span>Fri–Sat till 10</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Double+Mountain+1700+N+Killingsworth+St+Portland+OR" target="_blank" rel="noopener">1700 N Killingsworth St ↗</a></div>
+</article><article class="card t-burger">
+  <div class="card-top"><span class="num pin-burger">9</span>
+    <div class="card-head"><h4><a href="https://www.google.com/maps/search/?api=1&amp;query=Champs+Burgers+Behind+Away+Days%2C+SE+Cora+Portland+OR" target="_blank" rel="noopener">Champs Burgers</a></h4>
+    <div class="meta">Burger · 2.7 mi from Airbnb</div></div></div>
+  <div class="chips"><span class="chip tv-unk">TV ?</span></div>
+  <p class="note">Dry-aged beef, tallow fries. Pair with Away Days and Ruse.</p>
+  <div class="foot"><span>Till 7</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Champs+Burgers+Behind+Away+Days%2C+SE+Cora+Portland+OR" target="_blank" rel="noopener">Behind Away Days, SE Cora ↗</a></div>
+</article></div>
+</section>
+<section id="closed" class="sect">
+  <div class="sect-head"><h2>Closed, skip these</h2><p>Still show up on older lists and some map apps.</p></div>
+  <ul class="closed"><li><strong>Cascade Brewing Barrel House</strong> <span>Closed June 2024</span></li><li><strong>Hair of the Dog</strong> <span>Closed, founder retired</span></li><li><strong>Culmination Brewing</strong> <span>Closed Feb 2025</span></li><li><strong>Upright Brewing</strong> <span>Closed Dec 2025. Upright Beer Station on NE Prescott now pours guest taps</span></li><li><strong>Ex Novo (Portland)</strong> <span>Portland taproom gone; space is now Lazy Days</span></li><li><strong>Chuckanut P-Nut Beer Hall</strong> <span>Closed Oct 2024; Everywhere now in that space</span></li><li><strong>Nebuleus (4.47)</strong> <span>Highest-rated Portland brewery, but no taproom</span></li></ul>
+</section>
+<footer>Ratings from Untappd brewery pages, Nov 2026. TV status confirmed only where marked TV or No TV; "TV ?" means call ahead. Distances are straight-line from the Airbnb.</footer>
+</div>
+</body>
+</html>

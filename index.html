@@ -64,6 +64,10 @@ nav.jump a:hover { border-color:var(--accent) }
 .sect-head p { margin:0; color:var(--muted) }
 .mapwrap { background:var(--surface); border:1px solid var(--line); border-radius:10px; overflow:hidden }
 .map { display:block; width:100%; height:auto }
+a.mapwrap { display:block; position:relative; text-decoration:none }
+a.mapwrap:hover { border-color:var(--accent) }
+.mapcta { position:absolute; right:10px; top:10px; background:var(--accent); color:var(--accent-ink); font-weight:600; font-size:13px; padding:7px 12px; border-radius:6px }
+@media print { .mapcta { display:none } }
 .m-bg { fill:var(--surface) } .m-grid { stroke:var(--grid); stroke-width:1 }
 .m-river { fill:none; stroke:var(--river); stroke-width:14; stroke-linecap:round; stroke-linejoin:round; opacity:.7 }
 .m-road { stroke:var(--line); stroke-width:3; stroke-dasharray:2 6 }
@@ -159,7 +163,7 @@ footer { padding-block:28px 0; color:var(--muted); font-size:13px; max-width:75c
 </section>
 <section id="home" class="sect">
   <div class="sect-head"><h2>Home base</h2><p>Walkable from the Airbnb, plus the game-day TV spots and pizza.</p></div>
-  <div class="mapwrap"><svg viewBox="0 0 900 440" class="map" role="img" aria-label="Schematic map">
+  <a class="mapwrap" href="https://www.google.com/maps/d/viewer?mid=1HFdr8MKDcj7Y_1BzO9MobulaVO9WHtc&ll=45.52815%2C-122.64915&z=14" target="_blank" rel="noopener" aria-label="Open Home base in Google Maps"><svg viewBox="0 0 900 440" class="map" role="img" aria-label="Schematic map">
 <rect width="900" height="440" class="m-bg"/>
 <line x1="112" y1="0" x2="112" y2="440" class="m-grid"/>
 <line x1="225" y1="0" x2="225" y2="440" class="m-grid"/>
@@ -192,7 +196,7 @@ footer { padding-block:28px 0; color:var(--muted); font-size:13px; max-width:75c
 <g class="pin pin-pizza"><circle cx="657.8" cy="390.0" r="11"/><text x="657.8" y="394.0" text-anchor="middle">13</text></g>
 <g class="pin pin-burger"><circle cx="414.4" cy="332.9" r="11"/><text x="414.4" y="336.9" text-anchor="middle">14</text></g>
 <text x="10" y="430" class="m-lbl">Schematic · N is up · not to street scale</text>
-</svg></div>
+</svg><span class="mapcta">Open this area in Google Maps ↗</span></a>
   <div class="cards"><article class="card t-brewery">
   <div class="card-top"><span class="num pin-brewery">1</span>
     <div class="card-head"><h4><a href="https://dualitybrewing.com" target="_blank" rel="noopener">Duality Brewing</a></h4>
@@ -294,7 +298,7 @@ footer { padding-block:28px 0; color:var(--muted); font-size:13px; max-width:75c
 </article></div>
 </section><section id="east" class="sect">
   <div class="sect-head"><h2>Central Eastside &amp; Belmont</h2><p>20–30 min walk or a 5–8 min Uber. The densest brewery cluster.</p></div>
-  <div class="mapwrap"><svg viewBox="0 0 900 440" class="map" role="img" aria-label="Schematic map">
+  <a class="mapwrap" href="https://www.google.com/maps/d/viewer?mid=1HFdr8MKDcj7Y_1BzO9MobulaVO9WHtc&ll=45.51270%2C-122.64005&z=13" target="_blank" rel="noopener" aria-label="Open Central Eastside &amp; Belmont in Google Maps"><svg viewBox="0 0 900 440" class="map" role="img" aria-label="Schematic map">
 <rect width="900" height="440" class="m-bg"/>
 <line x1="112" y1="0" x2="112" y2="440" class="m-grid"/>
 <line x1="225" y1="0" x2="225" y2="440" class="m-grid"/>
@@ -325,7 +329,7 @@ footer { padding-block:28px 0; color:var(--muted); font-size:13px; max-width:75c
 <g class="pin pin-bar"><circle cx="311.2" cy="390.0" r="11"/><text x="311.2" y="394.0" text-anchor="middle">11</text></g>
 <g class="pin pin-burger"><circle cx="211.3" cy="285.8" r="11"/><text x="211.3" y="289.8" text-anchor="middle">12</text></g>
 <text x="10" y="430" class="m-lbl">Schematic · N is up · not to street scale</text>
-</svg></div>
+</svg><span class="mapcta">Open this area in Google Maps ↗</span></a>
   <div class="cards"><article class="card t-brewery">
   <div class="card-top"><span class="num pin-brewery">1</span>
     <div class="card-head"><h4><a href="https://www.google.com/maps/search/?api=1&amp;query=Everywhere+Beer+Co.+920+SE+Caruthers+St+Portland+OR" target="_blank" rel="noopener">Everywhere Beer Co.</a></h4>
@@ -413,7 +417,7 @@ footer { padding-block:28px 0; color:var(--muted); font-size:13px; max-width:75c
 </article></div>
 </section><section id="nw" class="sect">
   <div class="sect-head"><h2>Northwest Uber run</h2><p>10–15 min Uber. Brujos and Great Notion are the two highest-rated stops of the trip.</p></div>
-  <div class="mapwrap"><svg viewBox="0 0 900 374" class="map" role="img" aria-label="Schematic map">
+  <a class="mapwrap" href="https://www.google.com/maps/d/viewer?mid=1HFdr8MKDcj7Y_1BzO9MobulaVO9WHtc&ll=45.53245%2C-122.69540&z=14" target="_blank" rel="noopener" aria-label="Open Northwest Uber run in Google Maps"><svg viewBox="0 0 900 374" class="map" role="img" aria-label="Schematic map">
 <rect width="900" height="374" class="m-bg"/>
 <line x1="112" y1="0" x2="112" y2="374" class="m-grid"/>
 <line x1="225" y1="0" x2="225" y2="374" class="m-grid"/>
@@ -437,7 +441,7 @@ footer { padding-block:28px 0; color:var(--muted); font-size:13px; max-width:75c
 <g class="pin pin-brewery"><circle cx="373.9" cy="324.3" r="11"/><text x="373.9" y="328.3" text-anchor="middle">4</text></g>
 <g class="pin pin-bar"><circle cx="168.4" cy="172.5" r="11"/><text x="168.4" y="176.5" text-anchor="middle">5</text></g>
 <text x="10" y="364" class="m-lbl">Schematic · N is up · not to street scale</text>
-</svg></div>
+</svg><span class="mapcta">Open this area in Google Maps ↗</span></a>
   <div class="cards"><article class="card t-brewery">
   <div class="card-top"><span class="num pin-brewery">1</span>
     <div class="card-head"><h4><a href="https://brujosbrewing.com" target="_blank" rel="noopener">Brujos Brewing</a></h4>
@@ -476,7 +480,7 @@ footer { padding-block:28px 0; color:var(--muted); font-size:13px; max-width:75c
 </article></div>
 </section><section id="far" class="sect">
   <div class="sect-head"><h2>Farther out</h2><p>Worth it only for a specific target. Pair Ruse, Away Days and Champs.</p></div>
-  <div class="mapwrap"><svg viewBox="0 0 900 440" class="map" role="img" aria-label="Schematic map">
+  <a class="mapwrap" href="https://www.google.com/maps/d/viewer?mid=1HFdr8MKDcj7Y_1BzO9MobulaVO9WHtc&ll=45.52330%2C-122.63460&z=12" target="_blank" rel="noopener" aria-label="Open Farther out in Google Maps"><svg viewBox="0 0 900 440" class="map" role="img" aria-label="Schematic map">
 <rect width="900" height="440" class="m-bg"/>
 <line x1="112" y1="0" x2="112" y2="440" class="m-grid"/>
 <line x1="225" y1="0" x2="225" y2="440" class="m-grid"/>
@@ -504,7 +508,7 @@ footer { padding-block:28px 0; color:var(--muted); font-size:13px; max-width:75c
 <g class="pin pin-brewery"><circle cx="295.1" cy="50.0" r="11"/><text x="295.1" y="54.0" text-anchor="middle">8</text></g>
 <g class="pin pin-burger"><circle cx="394.2" cy="357.6" r="11"/><text x="394.2" y="361.6" text-anchor="middle">9</text></g>
 <text x="10" y="430" class="m-lbl">Schematic · N is up · not to street scale</text>
-</svg></div>
+</svg><span class="mapcta">Open this area in Google Maps ↗</span></a>
   <div class="cards"><article class="card t-brewery">
   <div class="card-top"><span class="num pin-brewery">1</span>
     <div class="card-head"><h4><a href="https://greatnotion.com" target="_blank" rel="noopener">Great Notion · Alberta</a></h4>
